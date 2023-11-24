@@ -12,6 +12,44 @@
 
 #include "get_next_line.h"
 
+void	*ft_memcpy(void *dest, const void *src, size_t n)
+{
+	unsigned char		*pdest;
+	const unsigned char	*psrc;
+
+	if (!dest && !src)
+		return (NULL);
+	pdest = dest;
+	psrc = src;
+	while (n--)
+		*pdest++ = *psrc++;
+	return (dest);
+}
+
+size_t	ft_strlen(const char *s)
+{
+	int	i;
+
+	i = 0;
+	while (s[i])
+		i++;
+	return (i);
+}
+
+void	ft_bzero(void *s, size_t n)
+{
+	size_t			i;
+	unsigned char	*str;
+
+	i = 0;
+	str = (unsigned char *)s;
+	while (i < n)
+	{
+		str[i] = '\0';
+		i++;
+	}
+}
+
 int	is_whitespace(char c)
 {
 	if ((c >= 9 && c <= 13) || c == ' ')

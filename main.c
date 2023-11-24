@@ -12,6 +12,8 @@
 
 #include "get_next_line.h"
 
+const unsigned int BUF_SIZE = 3;
+
 int	main(int argc, char *argv[])
 {
 	char	*buf;
@@ -27,8 +29,10 @@ int	main(int argc, char *argv[])
 		fd = open(argv[1], O_RDONLY);
 	printf("Supplied file descriptor %d:\n", fd);
 	i = 0;
-	while (i < 5)
+	while (i < 24)
 	{
+		/*ft_bzero(buf, 60);*/
+		printf("\nCall %d\t:", i + 1);
 		buf = get_next_line(fd);
 		printf("%s", buf);
 		i++;

@@ -14,17 +14,31 @@
 
 char	*get_next_line(int fd)
 {
-	char			*buf;
-	size_t			buf_size;
-	static size_t	i;
+	char		*buf;
+	size_t		i;
+	static char	*prev;
+	char		*swap;
 
-	buf_size = 10;
-	buf = malloc(sizeof(char) * buf_size);
-	read(fd, buf, buf_size);
-	while (i < buf_size)
+	if (fd < 0)
+		return (NULL);
+	i = 0;
+	buf = malloc(sizeof(char) * BUF_SIZE);
+	if (prev)
+	{
+		swap = malloc(sizeof(char) * BUF_SIZE);
+		ft_bzero(swap, BUF_SIZE);
+		ft_memcpy(swap, buf, BUF_SIZE);
+		ft_bzero(prev, ft_strlen(prev));
+	}
+	read(fd, buf, BUF_SIZE);
+	while (i < BUF_SIZE)
 	{
 		if (buf[i] == '\n')
 		{
+			prev = malloc(sizeof(char) * (BUF_SIZE - ft_strlen(buf)));
+			ft_memcpy(swap, buf, BUF_SIZE);
+			if (swap)
+				return (swap);
 			buf[i + 1] = '\0';
 			return (buf);
 		}

@@ -13,6 +13,8 @@
 #ifndef GET_NEXT_LINE_H
 # define GET_NEXT_LINE_H
 
+extern const unsigned int	BUF_SIZE;
+
 # include <unistd.h>
 # include <stdio.h>
 # include <fcntl.h>
@@ -21,5 +23,8 @@
 
 char	*get_next_line(int fd);
 int		ft_atoi(const char *nptr);
+void	ft_bzero(void *s, size_t n);
+size_t	ft_strlen(const char *s);
+void	*ft_memcpy(void *dest, const void *src, size_t n);
 
 #endif

@@ -1,5 +1,5 @@
 ZERO
-One Two Three Four Five Six Seven Eight Nine Ten.
+One: Two Three Four Five Six Seven Eight Nine Ten.
 Two: a second line of text
 Three: shorter
 Four: longer than the others going abcdefghijklmnopqrstuvwxyz
