@@ -6,44 +6,64 @@
 /*   By: jcummins <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/23 16:39:15 by jcummins          #+#    #+#             */
-/*   Updated: 2023/11/24 15:11:55 by jcummins         ###   ########.fr       */
+/*   Updated: 2023/11/27 18:07:58 by jcummins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
+const unsigned int	BUF_SIZE = 100;
+
+char	*to_newline(char *str)
+{
+	int		i;
+	char	*out;
+
+	i = 0;
+	while (str[i] && (str[i] != '\n'))
+		i++;
+	out = malloc((i + 1) * sizeof(char));
+	if (out == NULL)
+		return (NULL);
+	i = 0;
+	while (str[i] && (str[i] != '\n'))
+	{
+		out[i] = str[i];
+		i++;
+	}
+	out[i] = '\0';
+	return (out);
+}
+
 char	*get_next_line(int fd)
 {
-	char		*buf;
-	size_t		i;
-	static char	*prev;
-	char		*swap;
+	static char		*buf;
+	char			*swap;
 
 	if (fd < 0)
 		return (NULL);
-	i = 0;
-	buf = malloc(sizeof(char) * BUF_SIZE);
-	if (prev)
+	if (!buf || !ft_strlen(buf))
 	{
-		swap = malloc(sizeof(char) * BUF_SIZE);
+		buf = malloc((BUF_SIZE + 1) * sizeof(char));
+		read(fd, buf, BUF_SIZE);
+	}
+	swap = malloc ((BUF_SIZE - ft_strlen(buf) + 1) * sizeof(char));
+	read (fd, swap, BUF_SIZE - ft_strlen(buf));
+	ft_strlcat(buf, swap, (BUF_SIZE + 1));	// take any existing buf and cat the output of read onto the end
+	free(swap);
+	if (buf)
+	{
+		swap = malloc(BUF_SIZE * sizeof(char));
 		ft_bzero(swap, BUF_SIZE);
-		ft_memcpy(swap, buf, BUF_SIZE);
-		ft_bzero(prev, ft_strlen(prev));
-	}
-	read(fd, buf, BUF_SIZE);
-	while (i < BUF_SIZE)
-	{
-		if (buf[i] == '\n')
+		ft_memcpy(swap, buf, ft_strlen(buf));
+		while (*buf++)
 		{
-			prev = malloc(sizeof(char) * (BUF_SIZE - ft_strlen(buf)));
-			ft_memcpy(swap, buf, BUF_SIZE);
-			if (swap)
-				return (swap);
-			buf[i + 1] = '\0';
-			return (buf);
+			if (*buf == '\n')
+			{
+				buf++;
+				return (to_newline(swap));
+			}
 		}
-		i++;
 	}
-	/*printf("Read from file: %s\n", buf);*/
-	return (buf);
+	return (NULL);
 }
