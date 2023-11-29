@@ -6,7 +6,7 @@
 /*   By: jcummins <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/23 16:39:15 by jcummins          #+#    #+#             */
-/*   Updated: 2023/11/28 16:02:32 by jcummins         ###   ########.fr       */
+/*   Updated: 2023/11/29 15:47:30 by jcummins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ int	main(int argc, char *argv[])
 	i = 0;
 	while (i <= 10)
 	{
-		printf("Call %d\t:", i + 1);
+		printf("Call %d\t:", i);
 		buf = get_next_line(fd);
 		if (buf)
 		{

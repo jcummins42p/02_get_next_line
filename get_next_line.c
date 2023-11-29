@@ -6,13 +6,11 @@
 /*   By: jcummins <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/23 16:39:15 by jcummins          #+#    #+#             */
-/*   Updated: 2023/11/28 18:35:48 by jcummins         ###   ########.fr       */
+/*   Updated: 2023/11/29 18:50:09 by jcummins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-
-const unsigned int	BUF_SIZE = 45035;
 
 int	complete(char *str)
 {
@@ -57,46 +55,51 @@ char	*to_newline(char *str)
 
 char	*get_buffer(int fd)
 {
-	static char		*buf;
+	static char		buf[BUFFER_SIZE + 1];
+	static int		i;
 	char			*swap;
+	int				B = BUFFER_SIZE;
 
 	if (fd < 0)
 		return (NULL);
-	if (!buf || !ft_strlen(buf))
+	if (!i)
 	{
-		buf = malloc((BUF_SIZE + 1) * sizeof(char));
-		if (!buf)
-			return (NULL);
-		read(fd, buf, BUF_SIZE);
-		if (!buf || !ft_strlen(buf))
+		i = 0;
+		read(fd, buf, BUFFER_SIZE);
+		buf[BUFFER_SIZE] = '\0';
+		if (!ft_strlen(&buf[i]))
 			return (NULL);
 	}
-	if (ft_strlen(buf) < BUF_SIZE)
+	if (i > 0)
 	{
-		swap = malloc ((BUF_SIZE - ft_strlen(buf) + 1) * sizeof(char));
-		read (fd, swap, BUF_SIZE - ft_strlen(buf));
-		ft_strlcat(buf, swap, (BUF_SIZE + 1));
-		/*free(swap);*/
+		ft_memmove(&buf[0], &buf[i], BUFFER_SIZE);
+		swap = malloc((i + 1) * sizeof(char));
+		read (fd, swap, i);
+		ft_strlcat(buf, swap, ((BUFFER_SIZE) + 1));
+		free (swap);
 	}
-	if (buf)
+	if (1)
 	{
-		swap = malloc(BUF_SIZE * sizeof(char));
-		ft_bzero(swap, BUF_SIZE);
-		ft_memcpy(swap, buf, ft_strlen(buf));
-		while (*buf)
+		swap = malloc((BUFFER_SIZE + 1) * sizeof(char));
+		ft_bzero(swap, BUFFER_SIZE + 1);
+		ft_memcpy(swap, buf, BUFFER_SIZE + 1);
+		while (buf[i])
 		{
-			if (*buf++ == '\n')
+			if (buf[i] == '\n')
 			{
+				i++;
 				swap = to_newline(swap);
 				if (swap)
 					return (swap);
 				else
 					printf ("buffer exceeded");
 			}
+			i++;
 		}
 		return (swap);
 	}
-	return (NULL);
+	if (B)
+		return (NULL);
 }
 
 char	*get_next_line(int fd)
@@ -109,7 +112,11 @@ char	*get_next_line(int fd)
 		return (NULL);
 	line = get_buffer(fd);
 	while (!complete(line))
-		ft_strlcat(line, get_buffer(fd), (BUF_SIZE * ++reads) + 1);
+	{
+		ft_strlcat(line, get_buffer(fd), (BUFFER_SIZE * reads) + 1);
+		reads++;
+	}
+	reads = 0;
 	if (!line)
 		return (NULL);
 	return (rm_newline(line));
