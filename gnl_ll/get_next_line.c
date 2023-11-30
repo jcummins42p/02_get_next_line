@@ -6,7 +6,7 @@
 /*   By: jcummins <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/23 16:39:15 by jcummins          #+#    #+#             */
-/*   Updated: 2023/11/30 18:55:27 by jcummins         ###   ########.fr       */
+/*   Updated: 2023/11/29 18:50:09 by jcummins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ int	complete(char *str)
 
 	i = 0;
 	if (!str)
-		return (0);
+		return (-1);
 	while (str[i])
 	{
 		if (str[i++] == '\n')
@@ -53,57 +53,72 @@ char	*to_newline(char *str)
 	return (str);
 }
 
-char	*get_buffer(int fd, int reads, int *i)
+char	*get_buffer(int fd)
 {
 	static char		buf[BUFFER_SIZE + 1];
-	char			*line;
-	int				bytes_read;
+	static int		i;
+	char			*swap;
+	int				B = BUFFER_SIZE;
 
 	if (fd < 0)
 		return (NULL);
-	if (!*i || *i == BUFFER_SIZE)
+	if (!i)
 	{
-		*i = 0;
-		bytes_read = read(fd, buf, BUFFER_SIZE);
-		if (bytes_read <= 0)
+		i = 0;
+		read(fd, buf, BUFFER_SIZE);
+		buf[BUFFER_SIZE] = '\0';
+		if (!ft_strlen(&buf[i]))
 			return (NULL);
-		buf[bytes_read] = '\0';
 	}
-	if (*i > 0)
+	if (i > 0)
 	{
-		ft_memmove(&buf[0], &buf[*i], BUFFER_SIZE - *i + 1);
-		line = malloc((*i + 1) * sizeof(char));
-		read (fd, line, *i);
-		ft_strlcat(buf, line, ((BUFFER_SIZE) + 1));
-		free (line);
-		*i = 0;
+		ft_memmove(&buf[0], &buf[i], BUFFER_SIZE);
+		swap = malloc((i + 1) * sizeof(char));
+		read (fd, swap, i);
+		ft_strlcat(buf, swap, ((BUFFER_SIZE) + 1));
+		free (swap);
 	}
-	line = malloc(((BUFFER_SIZE * reads) + 1) * sizeof(char));
-	ft_memcpy(line, buf, BUFFER_SIZE + 1);
-	while (buf[*i])
+	if (1)
 	{
-		if (buf[(*i)++] == '\n')
-			return (to_newline(line));
+		swap = malloc((BUFFER_SIZE + 1) * sizeof(char));
+		ft_bzero(swap, BUFFER_SIZE + 1);
+		ft_memcpy(swap, buf, BUFFER_SIZE + 1);
+		while (buf[i])
+		{
+			if (buf[i] == '\n')
+			{
+				i++;
+				swap = to_newline(swap);
+				if (swap)
+					return (swap);
+				else
+					printf ("buffer exceeded");
+			}
+			i++;
+		}
+		return (swap);
 	}
-	return (line);
+	if (B)
+		return (NULL);
 }
 
 char	*get_next_line(int fd)
 {
-	char		*line;
-	int			reads;
-	static int	pos;
+	char	*line;
+	int		reads;
 
 	reads = 1;
-	if (fd < 0 || BUFFER_SIZE < 1)
+	if (fd < 0)
 		return (NULL);
-	line = get_buffer(fd, reads, &pos);
-	while (line && pos == BUFFER_SIZE && !complete(line))
+	line = get_buffer(fd);
+	while (!complete(line))
 	{
+		ft_strlcat(line, get_buffer(fd), (BUFFER_SIZE * reads) + 1);
 		reads++;
-		ft_strlcat(line, get_buffer(fd, reads, &pos), (BUFFER_SIZE * reads) + 1);
 	}
+	reads = 0;
 	if (!line)
 		return (NULL);
 	return (rm_newline(line));
+	return (NULL);
 }

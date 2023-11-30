@@ -1,0 +1,11 @@
+NOV 23 - Began work and made the program read from file correctly.
+
+NOV 24 - 
+
+NOV 27 - Now working with large buffer sizes - sucessfully used strlcat to read a new buffer and append the remnants of 'buf' to it. Now the issue is small buffer sizes.  
+
+NOV 28 - Small buffer sizes not crashing program now - lots of trouble trying to free malloc'd pointers so have removed that for now. 
+Need to capture the case that the end of buf is reached without a newline being found. If ft_strlen(buf) == 0 && *buf != \n. 
+Maybe I'm going about this all wrong and the iterative buffer reads need to be an integral part of the function.
+
+NOV 29 - Realised that the pointer arithmetic I have been using for the buf static pointer can be replaced with index based, which results in fewer calls to strlen. Also it needs to be declared as an array, because otherwise it is impossible to set its length - malloc cannot be used on static variables because they cannot be freed. New version works -almost- apart from a bug which is causing some buffer loss at low buffer sizes - tested not working with BUFFER 8. Should be an easy fix, and memory leaks should be much less an issue.
