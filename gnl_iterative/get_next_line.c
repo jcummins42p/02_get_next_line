@@ -6,13 +6,13 @@
 /*   By: jcummins <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/23 16:39:15 by jcummins          #+#    #+#             */
-/*   Updated: 2023/11/30 18:55:27 by jcummins         ###   ########.fr       */
+/*   Updated: 2023/12/01 12:43:22 by jcummins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-int	complete(char *str)
+int	is_complete(char *str)
 {
 	int	i;
 
@@ -25,19 +25,6 @@ int	complete(char *str)
 			return (1);
 	}
 	return (0);
-}
-
-char	*rm_newline(char *str)
-{
-	int		i;
-
-	i = 0;
-	while (str[i] && (str[i] != '\n'))
-		i++;
-	if (str[i] != '\n')
-		return (NULL);
-	str[i] = '\0';
-	return (str);
 }
 
 char	*to_newline(char *str)
@@ -53,11 +40,11 @@ char	*to_newline(char *str)
 	return (str);
 }
 
-char	*get_buffer(int fd, int reads, int *i)
+char	*get_buffer(int fd, size_t reads, size_t *i)
 {
 	static char		buf[BUFFER_SIZE + 1];
 	char			*line;
-	int				bytes_read;
+	size_t			bytes_read;
 
 	if (fd < 0)
 		return (NULL);
@@ -73,12 +60,14 @@ char	*get_buffer(int fd, int reads, int *i)
 	{
 		ft_memmove(&buf[0], &buf[*i], BUFFER_SIZE - *i + 1);
 		line = malloc((*i + 1) * sizeof(char));
-		read (fd, line, *i);
+		bytes_read = read (fd, line, *i);
+		if (bytes_read < *i)
+			return (NULL);
 		ft_strlcat(buf, line, ((BUFFER_SIZE) + 1));
 		free (line);
 		*i = 0;
 	}
-	line = malloc(((BUFFER_SIZE * reads) + 1) * sizeof(char));
+	line = malloc(((BUFFER_SIZE * (reads + 1)) + 1) * sizeof(char));
 	ft_memcpy(line, buf, BUFFER_SIZE + 1);
 	while (buf[*i])
 	{
@@ -90,20 +79,21 @@ char	*get_buffer(int fd, int reads, int *i)
 
 char	*get_next_line(int fd)
 {
-	char		*line;
-	int			reads;
-	static int	pos;
+	char			*line;
+	size_t			reads;
+	static size_t	pos;
 
 	reads = 1;
 	if (fd < 0 || BUFFER_SIZE < 1)
 		return (NULL);
 	line = get_buffer(fd, reads, &pos);
-	while (line && pos == BUFFER_SIZE && !complete(line))
+	while (line && pos == BUFFER_SIZE && !is_complete(line))
 	{
 		reads++;
 		ft_strlcat(line, get_buffer(fd, reads, &pos), (BUFFER_SIZE * reads) + 1);
 	}
 	if (!line)
 		return (NULL);
-	return (rm_newline(line));
+	line[ft_strlen(line) - 1] = '\0';
+	return (line);
 }
