@@ -6,7 +6,7 @@
 /*   By: jcummins <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/23 16:40:47 by jcummins          #+#    #+#             */
-/*   Updated: 2023/12/01 12:17:57 by jcummins         ###   ########.fr       */
+/*   Updated: 2023/12/04 16:59:23 by jcummins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,28 @@ size_t	ft_strlcat(char *dst, const char *src, size_t size)
 	if (dlen < size)
 		dst[i] = '\0';
 	return (dlen + ft_strlen(src));
+}
+
+char	*ft_strdup_s(const char *s, size_t size)
+{
+	char			*dup;
+	unsigned int	len;
+	unsigned int	i;
+
+	len = 0;
+	while (s[len])
+		len++;
+	dup = (char *)malloc((size) * sizeof(char));
+	if (!dup)
+		return (NULL);
+	i = 0;
+	while (i < len)
+	{
+		dup[i] = s[i];
+		i++;
+	}
+	dup[i] = '\0';
+	return (dup);
 }
 
 void	*ft_memmove(void *dest, const void *src, size_t n)
@@ -61,20 +83,6 @@ void	*ft_memmove(void *dest, const void *src, size_t n)
 	return (dest);
 }
 
-void	*ft_memcpy(void *dest, const void *src, size_t n)
-{
-	unsigned char		*pdest;
-	const unsigned char	*psrc;
-
-	if (!dest && !src)
-		return (NULL);
-	pdest = dest;
-	psrc = src;
-	while (n--)
-		*pdest++ = *psrc++;
-	return (dest);
-}
-
 size_t	ft_strlen(const char *s)
 {
 	int	i;
@@ -85,16 +93,17 @@ size_t	ft_strlen(const char *s)
 	return (i);
 }
 
-void	ft_bzero(void *s, size_t n)
+int	is_complete(char *str)
 {
-	size_t			i;
-	unsigned char	*str;
+	int	i;
 
 	i = 0;
-	str = (unsigned char *)s;
-	while (i < n)
+	if (!str)
+		return (0);
+	while (str[i])
 	{
-		str[i] = '\0';
-		i++;
+		if (str[i++] == '\n')
+			return (1);
 	}
+	return (0);
 }

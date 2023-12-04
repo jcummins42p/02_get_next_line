@@ -6,7 +6,7 @@
 /*   By: jcummins <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/23 16:39:15 by jcummins          #+#    #+#             */
-/*   Updated: 2023/12/04 15:42:31 by jcummins         ###   ########.fr       */
+/*   Updated: 2023/12/04 16:38:26 by jcummins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,11 +46,7 @@ int	main(int argc, char *argv[])
 	if (argv[1])
 	{
 		fd = open(argv[1], O_RDONLY);
-		/*printf("File descriptor open	: %d\n", fd);*/
-		/*printf("Reading with BUFFER_SIZE: %d\n", BUFFER_SIZE);*/
 		print_lines(fd);
-		/*if (close(fd) == 0)*/
-		/*printf("File %d closed\n", fd);*/
 	}
 	return (0);
 }
