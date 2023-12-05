@@ -6,7 +6,7 @@
 /*   By: jcummins <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/23 16:39:15 by jcummins          #+#    #+#             */
-/*   Updated: 2023/12/04 18:57:13 by jcummins         ###   ########.fr       */
+/*   Updated: 2023/12/05 18:27:36 by jcummins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,19 +31,21 @@ void	*partial_buf(int fd, char *buf, size_t *i)
 	char	*swap;
 	size_t	j;
 
+	if (!buf[0])
+		return (NULL);
 	j = *i;
 	ft_memmove(&buf[0], &buf[*i], BUFFER_SIZE - *i + 1);
-	swap = malloc(((BUFFER_SIZE * 2) + 1) * sizeof(char));
+	buf[BUFFER_SIZE - j] = '\0';
+	swap = malloc(((*i) + 1) * sizeof(char));
 	bytes_read = read (fd, swap, *i);
-	while (j < BUFFER_SIZE)
-		swap[j++] = '\0';
-	if (bytes_read == 0)
+	if (bytes_read == 0 && !buf[0])
 	{
 		free (swap);
 		return (NULL);
 	}
-	ft_strlcat(buf, swap, ((BUFFER_SIZE) + 1));
-	swap[BUFFER_SIZE] = '\0';
+	swap[bytes_read] = '\0';
+	if (bytes_read)
+		ft_strlcat(buf, swap, (BUFFER_SIZE - *i) + (bytes_read + 1));
 	free (swap);
 	return (buf);
 }
@@ -81,7 +83,7 @@ char	*extend_line(char *line, int fd, size_t rds, size_t *pos)
 
 	buf = ft_strdup_s(line, (BUFFER_SIZE * rds) + 1);
 	free (line);
-	line = ft_strdup_s(buf, ((BUFFER_SIZE * (rds + 1) + 1)));
+	line = ft_strdup_s(buf, (BUFFER_SIZE * rds) + 1);
 	free (buf);
 	buf = get_buffer(fd, pos);
 	if (buf)
@@ -103,7 +105,7 @@ char	*get_next_line(int fd)
 	size_t			rds;
 	static size_t	pos;
 
-	if (fd < 0 || BUFFER_SIZE <= 0)
+	if (fd < 0 || fd > 999 || BUFFER_SIZE <= 0)
 		return (NULL);
 	rds = 1;
 	line = get_buffer(fd, &pos);
@@ -114,8 +116,7 @@ char	*get_next_line(int fd)
 	}
 	if (!line || line[0] == '\0')
 	{
-		free (line);
-		return (NULL);
+		return (line);
 	}
 	line[(BUFFER_SIZE * (rds - 1) + pos)] = '\0';
 	return (line);

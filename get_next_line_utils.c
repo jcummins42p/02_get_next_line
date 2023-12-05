@@ -6,7 +6,7 @@
 /*   By: jcummins <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/23 16:40:47 by jcummins          #+#    #+#             */
-/*   Updated: 2023/12/04 16:59:23 by jcummins         ###   ########.fr       */
+/*   Updated: 2023/12/05 15:30:02 by jcummins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,23 +14,24 @@
 
 size_t	ft_strlcat(char *dst, const char *src, size_t size)
 {
-	size_t	dlen;
+	size_t	d_len;
+	size_t	s_len;
 	size_t	i;
+	size_t	j;
 
+	d_len = ft_strlen(dst);
+	s_len = ft_strlen(src);
 	if (size == 0)
-		return (ft_strlen(src));
-	i = 0;
-	while (dst[i] && i < size)
-		i++;
-	dlen = i;
-	while (src[i - dlen] && i < size - 1)
+		return (s_len);
+	i = d_len;
+	j = 0;
+	while ((i + j) < (size - 1) && src[j] != '\0')
 	{
-		dst[i] = src[i - dlen];
-		i++;
+		dst[i + j] = src[j];
+		j++;
 	}
-	if (dlen < size)
-		dst[i] = '\0';
-	return (dlen + ft_strlen(src));
+	dst[i + j] = '\0';
+	return (d_len + s_len);
 }
 
 char	*ft_strdup_s(const char *s, size_t size)
@@ -87,6 +88,8 @@ size_t	ft_strlen(const char *s)
 {
 	int	i;
 
+	if (s == NULL)
+		return (0);
 	i = 0;
 	while (s[i])
 		i++;
