@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jcummins <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/23 16:39:15 by jcummins          #+#    #+#             */
-/*   Updated: 2023/12/06 18:45:43 by jcummins         ###   ########.fr       */
+/*   Updated: 2023/12/06 18:53:13 by jcummins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,11 +68,11 @@ void	extend_line(int fd, int reads, char **line)
 
 char	*get_line(int fd, size_t reads)
 {
-	static char		remainder[(BUFFER_SIZE * 2) + 1];
+	static char		remainder[1024][(BUFFER_SIZE * 2) + 1];
 	char			*line;
 	char			*swap;
 
-	if (remainder[0] == 0)
+	if (remainder[fd][0] == 0)
 	{
 		line = get_buffer(fd);
 		if (!line || *line == '\0')
@@ -81,15 +81,15 @@ char	*get_line(int fd, size_t reads)
 			return (NULL);
 		}
 	}
-	else if (remainder[0])
-		line = ft_strdup_s(remainder, ((BUFFER_SIZE * ++reads) + 1));
+	else if (remainder[fd][0])
+		line = ft_strdup_s(remainder[fd], ((BUFFER_SIZE * ++reads) + 1));
 	while (!is_complete(line))
 		extend_line(fd, ++reads, &line);
 	swap = split_newline(line);
 	if (swap)
 	{
-		ft_memmove(remainder, swap, ft_strlen(swap));
-		remainder[ft_strlen(swap)] = '\0';
+		ft_memmove(remainder[fd], swap, ft_strlen(swap));
+		remainder[fd][ft_strlen(swap)] = '\0';
 	}
 	free (swap);
 	return (line);
