@@ -12,20 +12,21 @@
 
 #include "get_next_line.h"
 
-char	*split_newline(char *str) // Chops off and eturns remainder
+char	*split_newline(char *str) // Chops off at first \n and returns remainder
 {
-	char	*swap;
+	char	*remainder;
 	size_t	i;
 
 	i = 0;
 	if (!str)
 		return (NULL);
-	swap = ft_strdup_s(str, ft_strlen(str) + 1);
+	remainder = ft_strdup_s(str, ft_strlen(str) + 1);
 	while (str[i] && str[i] != '\n')
 		i++;
-	str[++i] = '\0';
-	swap = &swap[i];
-	return (swap);
+	while (str[i])
+		str[++i] = '\0';
+	remainder = &remainder[i];
+	return (remainder);
 }
 
 char	*get_buffer(int fd)
@@ -44,25 +45,25 @@ char	*get_buffer(int fd)
 	return (out);
 }
 
-char	*extend_line(int fd, int reads, char *line)
+char	*extend_line(int fd, int reads, char **line)
 {
 	char	*swap;
 
-	swap = ft_strdup_s(line, (BUFFER_SIZE * (reads + 1)) + 1);
-	free (line);
-	line = ft_strdup_s(swap, (BUFFER_SIZE * (reads + 1)) + 1);
+	swap = ft_strdup_s(*line, (BUFFER_SIZE * (reads + 2)) + 1);
+	free (*line);
+	*line = ft_strdup_s(swap, (BUFFER_SIZE * (reads + 2)) + 1);
 	free (swap);
 	swap = get_buffer(fd);
 	if (swap)
 	{
-		ft_strlcat(line, swap, ft_strlen(line) + ft_strlen(swap) + 1);
+		ft_strlcat(*line, swap, ft_strlen(*line) + ft_strlen(swap) + 1);
 		free (swap);
-		return (line);
+		return (*line);
 	}
 	else
 	{
 		free (swap);
-		return (line);
+		return (*line);
 	}
 }
 
@@ -75,21 +76,18 @@ char	*get_next_line(int fd)
 
 	if (fd < 0 || fd > 999 || BUFFER_SIZE <= 0)
 		return (NULL);
-	line = NULL;
-	swap = NULL;
 	reads = 1;
-	if (remainder && remainder[0] != '\0')
-	{
-		swap = ft_strdup_s(remainder, (BUFFER_SIZE) + 1);
-		line = extend_line(fd, reads, swap);
-	}
-	else
+	if (!remainder || remainder[0] == 0)
 		line = get_buffer(fd);
-	while (!is_complete(line))
+	else
 	{
-		reads++;
-		extend_line(fd, reads, line);
+		swap = ft_strdup_s(remainder, ((BUFFER_SIZE * reads) + 1));
+		line = extend_line(fd, ++reads, &swap);
 	}
+	if (!line)
+		return (NULL);
+	while (!is_complete(line))
+		extend_line(fd, ++reads, &line);
 	remainder = split_newline(line);
 	if (!line || *line == '\0')
 	{
