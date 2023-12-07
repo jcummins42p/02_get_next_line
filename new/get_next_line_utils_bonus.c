@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line_utils.c                              :+:      :+:    :+:   */
+/*   get_next_line_utils_bonus.c                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jcummins <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jcummins <jcummins@student.42prague.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/23 16:40:47 by jcummins          #+#    #+#             */
-/*   Updated: 2023/12/06 14:30:26 by jcummins         ###   ########.fr       */
+/*   Created: 2023/12/07 10:01:11 by jcummins          #+#    #+#             */
+/*   Updated: 2023/12/07 10:01:29 by jcummins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 size_t	ft_strlcat(char *dst, const char *src, size_t size)
 {

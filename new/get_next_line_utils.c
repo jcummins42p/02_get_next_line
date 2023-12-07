@@ -3,47 +3,49 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jcummins <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jcummins <jcummins@student.42prague.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/23 16:40:47 by jcummins          #+#    #+#             */
-/*   Updated: 2023/12/06 14:30:26 by jcummins         ###   ########.fr       */
+/*   Created: 2023/12/07 10:27:43 by jcummins          #+#    #+#             */
+/*   Updated: 2023/12/07 11:39:05 by jcummins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-size_t	ft_strlcat(char *dst, const char *src, size_t size)
+char	*ft_strjoin(char const *s1, char const *s2)
 {
-	size_t	d_len;
-	size_t	s_len;
+	char	*join;
 	size_t	i;
 	size_t	j;
 
-	d_len = ft_strlen(dst);
-	s_len = ft_strlen(src);
-	if (size == 0)
-		return (s_len);
-	i = d_len;
+	i = 0;
 	j = 0;
-	while ((i + j) < (size - 1) && src[j] != '\0')
-	{
-		dst[i + j] = src[j];
-		j++;
-	}
-	dst[i + j] = '\0';
-	return (d_len + s_len);
+	if (!s1 || !s2)
+		return (NULL);
+	join = (char *)malloc((ft_strlen(s1) + ft_strlen(s2) + 1) * sizeof(char));
+	if (join == NULL)
+		return (NULL);
+	i = 0;
+	j = 0;
+	while (s1[i])
+		join[j++] = s1[i++];
+	i = 0;
+	while (s2[i])
+		join[j++] = s2[i++];
+	join[j] = '\0';
+	return (join);
 }
 
-char	*ft_strdup_s(const char *s, size_t size)
+char	*ft_strdup(const char *s)
 {
-	char			*dup;
-	unsigned int	len;
-	unsigned int	i;
+	char	*dup;
+	size_t	len;
+	size_t	i;
 
 	len = 0;
 	while (s[len])
 		len++;
-	dup = (char *)malloc((size) * sizeof(char));
+	dup = (char *)malloc((len + 1) * sizeof(char));
 	if (!dup)
 		return (NULL);
 	i = 0;
@@ -86,7 +88,7 @@ void	*ft_memmove(void *dest, const void *src, size_t n)
 
 size_t	ft_strlen(const char *s)
 {
-	int	i;
+	size_t	i;
 
 	if (s == NULL)
 		return (0);
@@ -98,7 +100,7 @@ size_t	ft_strlen(const char *s)
 
 int	is_complete(char *str)
 {
-	int	i;
+	size_t	i;
 
 	i = 0;
 	if (!str)
@@ -106,7 +108,7 @@ int	is_complete(char *str)
 	while (str[i])
 	{
 		if (str[i++] == '\n')
-			return (1);
+			return (i);
 	}
 	return (0);
 }

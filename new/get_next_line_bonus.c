@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jcummins <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jcummins <jcummins@student.42prague.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/23 16:39:15 by jcummins          #+#    #+#             */
-/*   Updated: 2023/12/06 18:53:13 by jcummins         ###   ########.fr       */
+/*   Created: 2023/12/07 10:25:33 by jcummins          #+#    #+#             */
+/*   Updated: 2023/12/07 10:25:51 by jcummins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 char	*split_newline(char *str)
 {

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jcummins <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jcummins <jcummins@student.42prague.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/23 16:39:15 by jcummins          #+#    #+#             */
-/*   Updated: 2023/12/06 18:45:43 by jcummins         ###   ########.fr       */
+/*   Created: 2023/12/07 10:02:10 by jcummins          #+#    #+#             */
+/*   Updated: 2023/12/07 12:54:05 by jcummins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ char	*split_newline(char *str)
 	if (!str)
 		return (NULL);
 	len = ft_strlen(str);
-	rem = ft_strdup_s(str, len + 1);
+	rem = ft_strdup(str);
 	while (str[i] && str[i] != '\n')
 		i++;
 	while (str[i])
@@ -52,26 +52,37 @@ char	*get_buffer(int fd)
 	return (buf);
 }
 
-void	extend_line(int fd, int reads, char **line)
+int	extend_line(int fd, char **line)
 {
 	char	*swap;
+	char	*out;
+	int		success;
 
-	swap = ft_strdup_s(*line, (BUFFER_SIZE * reads) + 1);
-	free (*line);
-	*line = ft_strdup_s(swap, (BUFFER_SIZE * reads) + 1);
-	free (swap);
+	swap = NULL;
+	out = NULL;
+	success = 0;
 	swap = get_buffer(fd);
 	if (swap)
-		ft_strlcat(*line, swap, ft_strlen(*line) + ft_strlen(swap) + 1);
+	{
+		success = 1;
+		out = ft_strjoin(*line, swap);
+	}
+	else
+		out = ft_strdup(*line);
 	free (swap);
+	free (*line);
+	*line = ft_strdup(out);
+	free (out);
+	return (success);
 }
 
-char	*get_line(int fd, size_t reads)
+char	*get_line(int fd)
 {
-	static char		remainder[(BUFFER_SIZE * 2) + 1];
+	static char		remainder[(BUFFER_SIZE) + 1];
 	char			*line;
 	char			*swap;
 
+	line = NULL;
 	if (remainder[0] == 0)
 	{
 		line = get_buffer(fd);
@@ -82,9 +93,9 @@ char	*get_line(int fd, size_t reads)
 		}
 	}
 	else if (remainder[0])
-		line = ft_strdup_s(remainder, ((BUFFER_SIZE * ++reads) + 1));
-	while (!is_complete(line))
-		extend_line(fd, ++reads, &line);
+		line = ft_strdup(remainder);
+	while (!is_complete(line) && extend_line(fd, &line))
+		;
 	swap = split_newline(line);
 	if (swap)
 	{
@@ -98,12 +109,10 @@ char	*get_line(int fd, size_t reads)
 char	*get_next_line(int fd)
 {
 	char	*line;
-	size_t	reads;
 
-	reads = 1;
 	if (fd < 0 || fd > 999 || BUFFER_SIZE <= 0)
 		return (NULL);
-	line = get_line(fd, reads);
+	line = get_line(fd);
 	if (!line || *line == '\0')
 	{
 		free (line);
@@ -111,3 +120,42 @@ char	*get_next_line(int fd)
 	}
 	return (line);
 }
+
+/*void	print_lines(int fd)*/
+/*{*/
+	/*int		i;*/
+	/*char	*buf;*/
+
+	/*i = 1;*/
+	/*while (i)*/
+	/*{*/
+		/*buf = get_next_line(fd);*/
+		/*if (buf)*/
+		/*{*/
+			/*printf("%s", buf);*/
+			/*free (buf);*/
+		/*}*/
+		/*else*/
+		/*{*/
+			/*return ;*/
+		/*}*/
+		/*i++;*/
+	/*}*/
+/*}*/
+
+/*int	main(int argc, char *argv[])*/
+/*{*/
+	/*int		fd;*/
+
+	/*if (argc == 1)*/
+	/*{*/
+		/*printf("No file specified\n");*/
+		/*return (0);*/
+	/*}*/
+	/*if (argv[1])*/
+	/*{*/
+		/*fd = open(argv[1], O_RDONLY);*/
+		/*print_lines(fd);*/
+	/*}*/
+	/*return (0);*/
+/*}*/
