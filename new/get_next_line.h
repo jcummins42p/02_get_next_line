@@ -6,7 +6,7 @@
 /*   By: jcummins <jcummins@student.42prague.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/07 10:26:32 by jcummins          #+#    #+#             */
-/*   Updated: 2023/12/07 11:27:49 by jcummins         ###   ########.fr       */
+/*   Updated: 2023/12/07 14:57:15 by jcummins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,7 @@
 char	*ft_strjoin(char const *s1, char const *s2);
 char	*get_next_line(int fd);
 size_t	ft_strlen(const char *s);
-void	*ft_memcpy(void *dest, const void *src, size_t n);
 void	*ft_memmove(void *dest, const void *src, size_t n);
-size_t	ft_strlcat(char *dst, const char *src, size_t size);
 char	*ft_strdup(const char *s);
 int		is_complete(char *str);
 
