@@ -6,11 +6,11 @@
 /*   By: jcummins <jcummins@student.42prague.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/07 10:27:43 by jcummins          #+#    #+#             */
-/*   Updated: 2023/12/07 11:39:05 by jcummins         ###   ########.fr       */
+/*   Updated: 2023/12/11 13:11:23 by jcummins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 char	*ft_strjoin(char const *s1, char const *s2)
 {
