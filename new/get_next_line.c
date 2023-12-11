@@ -6,7 +6,7 @@
 /*   By: jcummins <jcummins@student.42prague.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/07 10:02:10 by jcummins          #+#    #+#             */
-/*   Updated: 2023/12/07 12:54:05 by jcummins         ###   ########.fr       */
+/*   Updated: 2023/12/11 12:25:08 by jcummins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,7 @@ char	*get_line(int fd)
 	char			*swap;
 
 	line = NULL;
+	swap = NULL;
 	if (remainder[0] == 0)
 	{
 		line = get_buffer(fd);
@@ -98,10 +99,8 @@ char	*get_line(int fd)
 		;
 	swap = split_newline(line);
 	if (swap)
-	{
 		ft_memmove(remainder, swap, ft_strlen(swap));
-		remainder[ft_strlen(swap)] = '\0';
-	}
+	remainder[ft_strlen(swap)] = '\0';
 	free (swap);
 	return (line);
 }

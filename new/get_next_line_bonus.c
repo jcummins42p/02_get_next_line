@@ -6,11 +6,11 @@
 /*   By: jcummins <jcummins@student.42prague.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/07 10:02:10 by jcummins          #+#    #+#             */
-/*   Updated: 2023/12/07 14:58:45 by jcummins         ###   ########.fr       */
+/*   Updated: 2023/12/11 12:25:34 by jcummins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 char	*split_newline(char *str)
 {
@@ -78,12 +78,13 @@ int	extend_line(int fd, char **line)
 
 char	*get_line(int fd)
 {
-	static char		remainder[(BUFFER_SIZE) + 1][1024];
+	static char		remainder[1024][(BUFFER_SIZE) + 1];
 	char			*line;
 	char			*swap;
 
 	line = NULL;
-	if (remainder[0][fd] == 0)
+	swap = NULL;
+	if (remainder[fd][0] == 0)
 	{
 		line = get_buffer(fd);
 		if (!line || *line == '\0')
@@ -92,16 +93,14 @@ char	*get_line(int fd)
 			return (NULL);
 		}
 	}
-	else if (remainder[0])
+	else if (remainder[fd][0])
 		line = ft_strdup(remainder[fd]);
 	while (!is_complete(line) && extend_line(fd, &line))
 		;
 	swap = split_newline(line);
 	if (swap)
-	{
 		ft_memmove(remainder[fd], swap, ft_strlen(swap));
-		remainder[ft_strlen(swap)][fd] = '\0';
-	}
+	remainder[fd][ft_strlen(swap)] = '\0';
 	free (swap);
 	return (line);
 }
@@ -121,7 +120,7 @@ char	*get_next_line(int fd)
 	return (line);
 }
 
-/*void	print_lines(int fd)*/
+/*void	print_file(int fd)*/
 /*{*/
 	/*int		i;*/
 	/*char	*buf;*/
@@ -146,16 +145,20 @@ char	*get_next_line(int fd)
 /*int	main(int argc, char *argv[])*/
 /*{*/
 	/*int		fd;*/
+	/*int		i;*/
 
 	/*if (argc == 1)*/
 	/*{*/
 		/*printf("No file specified\n");*/
 		/*return (0);*/
 	/*}*/
-	/*if (argv[1])*/
+	/*i = 1;*/
+	/*while (argv[i])*/
 	/*{*/
-		/*fd = open(argv[1], O_RDONLY);*/
-		/*print_lines(fd);*/
+		/*fd = open(argv[i], O_RDONLY);*/
+		/*print_file(fd);*/
+		/*close (fd);*/
+		/*i++;*/
 	/*}*/
 	/*return (0);*/
 /*}*/
