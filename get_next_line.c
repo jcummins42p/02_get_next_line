@@ -6,7 +6,7 @@
 /*   By: jcummins <jcummins@student.42prague.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/07 10:02:10 by jcummins          #+#    #+#             */
-/*   Updated: 2023/12/11 12:25:08 by jcummins         ###   ########.fr       */
+/*   Updated: 2024/01/26 16:57:34 by jcummins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,7 +109,7 @@ char	*get_next_line(int fd)
 {
 	char	*line;
 
-	if (fd < 0 || fd > 999 || BUFFER_SIZE <= 0)
+	if (fd < 0 || fd > 1024 || BUFFER_SIZE <= 0)
 		return (NULL);
 	line = get_line(fd);
 	if (!line || *line == '\0')
@@ -120,41 +120,36 @@ char	*get_next_line(int fd)
 	return (line);
 }
 
-/*void	print_lines(int fd)*/
-/*{*/
-	/*int		i;*/
-	/*char	*buf;*/
+void	print_lines(int fd)
+{
+	char	*buf;
 
-	/*i = 1;*/
-	/*while (i)*/
-	/*{*/
-		/*buf = get_next_line(fd);*/
-		/*if (buf)*/
-		/*{*/
-			/*printf("%s", buf);*/
-			/*free (buf);*/
-		/*}*/
-		/*else*/
-		/*{*/
-			/*return ;*/
-		/*}*/
-		/*i++;*/
-	/*}*/
-/*}*/
+	while (buf)
+	{
+		buf = get_next_line(fd);
+		if (buf)
+		{
+			printf("%s", buf);
+			free (buf);
+		}
+		else
+			return ;
+	}
+}
 
-/*int	main(int argc, char *argv[])*/
-/*{*/
-	/*int		fd;*/
+int	main(int argc, char *argv[])
+{
+	int		fd;
 
-	/*if (argc == 1)*/
-	/*{*/
-		/*printf("No file specified\n");*/
-		/*return (0);*/
-	/*}*/
-	/*if (argv[1])*/
-	/*{*/
-		/*fd = open(argv[1], O_RDONLY);*/
-		/*print_lines(fd);*/
-	/*}*/
-	/*return (0);*/
-/*}*/
+	if (argc == 1)
+	{
+		printf("No file specified\n");
+		return (0);
+	}
+	if (argv[1])
+	{
+		fd = open(argv[1], O_RDONLY);
+		print_lines(fd);
+	}
+	return (0);
+}
